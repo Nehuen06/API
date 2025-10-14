@@ -70,14 +70,21 @@
       errorDiv.textContent = "";
 
       try {
-        // Solicitud a la API pública
+        // 1️⃣ Obtener consejo en inglés
         const respuesta = await fetch('https://api.adviceslip.com/advice');
         if (!respuesta.ok) throw new Error('Error al conectar con la API');
         const datos = await respuesta.json();
+        const consejoOriginal = datos.slip.advice;
 
-        // Mostrar consejo y fecha
-        consejoDiv.textContent = '"' + datos.slip.advice + '"';
+        // 2️⃣ Traducir al español usando MyMemory
+        const traduccion = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(consejoOriginal)}&langpair=en|es`);
+        const datosTrad = await traduccion.json();
+        const consejoTraducido = datosTrad.responseData.translatedText;
+
+        // 3️⃣ Mostrar consejo traducido y fecha
+        consejoDiv.textContent = '"' + consejoTraducido + '"';
         fechaDiv.textContent = "📅 " + new Date().toLocaleDateString();
+
       } catch (error) {
         consejoDiv.textContent = "No se pudo cargar el consejo.";
         errorDiv.textContent = "Verifica tu conexión a Internet.";
