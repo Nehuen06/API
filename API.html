@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Actividad del Día - Nehuen y Dilan</title>
+  <title>Consejo del Día - Nehuen y Dilan</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -33,16 +33,11 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    #actividad {
+    #consejo {
       font-size: 1.3em;
       font-style: italic;
       margin: 20px 0;
       color: #0077b6;
-    }
-
-    #tipo {
-      font-size: 0.9em;
-      color: #555;
     }
 
     #fecha {
@@ -59,38 +54,37 @@
   </style>
 </head>
 <body>
-  <h1>💡 Actividad del Día 💡</h1>
+  <h1>💡 Consejo del Día 💡</h1>
   <div id="contenedor">
-    <div id="actividad">Cargando...</div>
-    <div id="tipo"></div>
+    <div id="consejo">Cargando...</div>
     <div id="fecha"></div>
     <div id="error" class="error"></div>
   </div>
 
   <script>
-    async function obtenerActividad() {
-      const actividadDiv = document.getElementById('actividad');
-      const tipoDiv = document.getElementById('tipo');
+    async function obtenerConsejo() {
+      const consejoDiv = document.getElementById('consejo');
       const fechaDiv = document.getElementById('fecha');
       const errorDiv = document.getElementById('error');
-      actividadDiv.textContent = "Cargando...";
+      consejoDiv.textContent = "Cargando...";
       errorDiv.textContent = "";
 
       try {
-        const respuesta = await fetch('https://www.boredapi.com/api/activity/');
+        // Solicitud a la API pública
+        const respuesta = await fetch('https://api.adviceslip.com/advice');
         if (!respuesta.ok) throw new Error('Error al conectar con la API');
         const datos = await respuesta.json();
 
-        actividadDiv.textContent = '"' + datos.activity + '"';
-        tipoDiv.textContent = "Tipo de actividad: " + datos.type;
+        // Mostrar consejo y fecha
+        consejoDiv.textContent = '"' + datos.slip.advice + '"';
         fechaDiv.textContent = "📅 " + new Date().toLocaleDateString();
       } catch (error) {
-        actividadDiv.textContent = "No se pudo cargar la actividad.";
+        consejoDiv.textContent = "No se pudo cargar el consejo.";
         errorDiv.textContent = "Verifica tu conexión a Internet.";
       }
     }
 
-    obtenerActividad();
+    obtenerConsejo();
   </script>
 </body>
 </html>
