@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clima Actual - Nehuen y Dilan</title>
+  <title>Actividad del Día - Nehuen y Dilan</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -33,23 +33,25 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    #icono {
-      width: 80px;
+    #actividad {
+      font-size: 1.3em;
+      font-style: italic;
+      margin: 20px 0;
+      color: #0077b6;
+    }
+
+    #tipo {
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    #fecha {
+      font-size: 0.9em;
+      color: #555;
       margin-top: 10px;
     }
 
-    #temp {
-      font-size: 2em;
-      color: #0077b6;
-      margin: 10px 0;
-    }
-
-    #descripcion {
-      text-transform: capitalize;
-      margin-bottom: 10px;
-    }
-
-    #error {
+    .error {
       color: red;
       font-weight: bold;
       margin-top: 15px;
@@ -57,46 +59,38 @@
   </style>
 </head>
 <body>
-  <h1>☀️ Clima Actual ☁️</h1>
+  <h1>💡 Actividad del Día 💡</h1>
   <div id="contenedor">
-    <div id="ciudad">Cargando...</div>
-    <img id="icono" src="" alt="">
-    <div id="temp"></div>
-    <div id="descripcion"></div>
-    <div id="humedad"></div>
-    <div id="error"></div>
+    <div id="actividad">Cargando...</div>
+    <div id="tipo"></div>
+    <div id="fecha"></div>
+    <div id="error" class="error"></div>
   </div>
 
   <script>
-    async function obtenerClima() {
-      const ciudad = "Neuquen"; // Podés cambiarla
-      const apiKey = "dff64e3889801075cd0c7cc631aeeaa9"; // Reemplazá con tu clave real
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${apiKey}&units=metric&lang=es`;
-
-      const ciudadDiv = document.getElementById('ciudad');
-      const tempDiv = document.getElementById('temp');
-      const descDiv = document.getElementById('descripcion');
-      const humDiv = document.getElementById('humedad');
-      const iconoImg = document.getElementById('icono');
+    async function obtenerActividad() {
+      const actividadDiv = document.getElementById('actividad');
+      const tipoDiv = document.getElementById('tipo');
+      const fechaDiv = document.getElementById('fecha');
       const errorDiv = document.getElementById('error');
+      actividadDiv.textContent = "Cargando...";
+      errorDiv.textContent = "";
 
       try {
-        const respuesta = await fetch(url);
+        const respuesta = await fetch('https://www.boredapi.com/api/activity/');
         if (!respuesta.ok) throw new Error('Error al conectar con la API');
         const datos = await respuesta.json();
 
-        ciudadDiv.textContent = "📍 " + datos.name;
-        tempDiv.textContent = Math.round(datos.main.temp) + "°C";
-        descDiv.textContent = datos.weather[0].description;
-        humDiv.textContent = "Humedad: " + datos.main.humidity + "%";
-        iconoImg.src = `https://openweathermap.org/img/wn/${datos.weather[0].icon}@2x.png`;
+        actividadDiv.textContent = '"' + datos.activity + '"';
+        tipoDiv.textContent = "Tipo de actividad: " + datos.type;
+        fechaDiv.textContent = "📅 " + new Date().toLocaleDateString();
       } catch (error) {
-        errorDiv.textContent = "No se pudo obtener el clima. Verifica tu conexión.";
+        actividadDiv.textContent = "No se pudo cargar la actividad.";
+        errorDiv.textContent = "Verifica tu conexión a Internet.";
       }
     }
 
-    obtenerClima();
+    obtenerActividad();
   </script>
 </body>
 </html>
-
